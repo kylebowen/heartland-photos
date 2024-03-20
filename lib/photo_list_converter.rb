@@ -26,13 +26,16 @@ class PhotoListConverter
 
   private
 
-  # Converts the list of metadata from a single string into an array of objects
-  # that can provide relevant info about each line.
+  # Adds a nested hash entry to the 'cities' param based on the city and
+  # timestamp of a photo.
   #
-  # @param list [String] List items are separated by newline characters
-  # @return [Array<Photo>]
-  def parse_photos_from_list(list)
-    convert_entries_to_photos(split_entries(list))
+  # Mutates 'cities' param.
+  #
+  # @param photo [Photo]
+  # @param cities [Hash{String => Hash}]
+  # @return [void]
+  def add_to_cities(photo, cities)
+    cities[photo.city][photo.timestamp] = photo
   end
 
   # Groups the photos by city, then sorts the timestamps for each city and
@@ -52,26 +55,6 @@ class PhotoListConverter
         metadata[timestamp].order = format("%0#{required_digits}d", (index + 1))
       }
     }
-  end
-
-  # Adds a nested hash entry to the 'cities' param based on the city and
-  # timestamp of a photo.
-  #
-  # Mutates 'cities' param.
-  #
-  # @param photo [Photo]
-  # @param cities [Hash{String => Hash}]
-  # @return [void]
-  def add_to_cities(photo, cities)
-    cities[photo.city][photo.timestamp] = photo
-  end
-
-  # Splits a string on newline characters.
-  #
-  # @param entries [String]
-  # @return [Array<String>]
-  def split_entries(entries)
-    entries.split("\n")
   end
 
   # @param entries [Array<String>]
@@ -95,6 +78,14 @@ class PhotoListConverter
     )
   end
 
+  # Generates the new filename for a photo based on its attributes.
+  #
+  # @param photo [Photo]
+  # @return [String]
+  def generate_new_filename(photo)
+    "#{photo.city}#{photo.order}.#{photo.extension}"
+  end
+
   # Converts the processed list of photos back into a string containing the new
   # filenames separated by newline characters.
   #
@@ -105,11 +96,20 @@ class PhotoListConverter
     photo_list.join("\n")
   end
 
-  # Generates the new filename for a photo based on its attributes.
+  # Converts the list of metadata from a single string into an array of objects
+  # that can provide relevant info about each line.
   #
-  # @param photo [Photo]
-  # @return [String]
-  def generate_new_filename(photo)
-    "#{photo.city}#{photo.order}.#{photo.extension}"
+  # @param list [String] List items are separated by newline characters
+  # @return [Array<Photo>]
+  def parse_photos_from_list(list)
+    convert_entries_to_photos(split_entries(list))
+  end
+
+  # Splits a string on newline characters.
+  #
+  # @param entries [String]
+  # @return [Array<String>]
+  def split_entries(entries)
+    entries.split("\n")
   end
 end
