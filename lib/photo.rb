@@ -10,7 +10,7 @@ class Photo
   # @param name [String] Original filename (without extension)
   # @param timestamp [String] DateTime photo was taken. Format: "yyyy-mm-dd hh:mm:ss"
   # @return [self]
-  def initialize(city:, extension:, name:, timestamp:, order: 0)
+  def initialize(city:, extension:, name:, timestamp:, order: nil)
     @city = city
     @extension = extension
     @name = name
