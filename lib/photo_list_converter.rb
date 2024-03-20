@@ -1,23 +1,22 @@
 require_relative "photo"
 
-# The Photo List Converter class contains the logic for parsing formatted file
+# The +PhotoListConverter+ class contains the logic for parsing formatted file
 # metadata and generating new filenames.
 class PhotoListConverter
   # Converts a string containing photo metadata for one or more files into a
-  # string containing new filenames for each photo based on the individual and
-  # aggregated metadata.
+  # string containing new filenames for each photo. The new names are based on
+  # the individual and aggregated metadata.
   #
   # @param photo_list [String] Lines of the photo_list are separated by newline
-  # characters and each line of the photo_list is of the format:
+  #   characters and each line of the +photo_list+ is of the format:
   #
-  #   <<photoname>>.<<extension>>, <<city_name>>, yyyy-mm-dd hh:mm:ss
+  #    <<photoname>>.<<extension>>, <<city_name>>, yyyy-mm-dd hh:mm:ss
   #
   # @return [String] filenames, Lines of the filenames are still separated by
-  # newline characters and each line corresponds to the input in the same
-  # position. Filenames are of the format:
+  #   newline characters and each line corresponds to the input in the same
+  #   position. Filenames are of the format:
   #
-  #   <<city_name>><<zero_padded_order_number>>.<<extension>>
-  #
+  #    <<city_name>><<zero_padded_order_number>>.<<extension>>
   def process(photo_list)
     photos = parse_photos_from_list(photo_list)
     cities = Hash.new { |h,k| h[k] = {} }
@@ -32,7 +31,6 @@ class PhotoListConverter
   #
   # @param list [String] List items are separated by newline characters
   # @return [Array<Photo>]
-  #
   def parse_photos_from_list(list)
     convert_entries_to_photos(split_entries(list))
   end
@@ -45,7 +43,6 @@ class PhotoListConverter
   # @param photos [Array<Photo>]
   # @param cities [Hash{String => Hash}]
   # @return [void]
-  #
   def aggregate_metadata(photos, cities)
     photos.each { |photo| add_to_cities(photo, cities) }
     cities.each { |city, metadata|
